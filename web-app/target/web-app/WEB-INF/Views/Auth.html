@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Авторизация</title>
+    <link rel="stylesheet" type="text/css" href="C:/Users/Developer/IdeaProjects/web-app/src/main/resources/mysite.css">
+</head>
+<body bgcolor=#808080 >
+<div class="form_auth_block">
+    <div class="form_auth_block_content">
+        <p class="form_auth_block_head_text">Авторизация</p>
+        <label>Введите Ваш имейл</label>
+        <input id="mail" type="email" name="auth_email" placeholder="Введите Ваш имейл" required >
+        <label>Введите Ваш пароль</label>
+        <input id="pwd" type="password" name="auth_pass" placeholder="Введите пароль" required >
+        <button class="form_auth_button" type="submit" name="form_auth_submit">Войти</button>
+    </div>
+</div>
+
+<p name="demo"></p>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    $(document).on("click", ".form_auth_button", function() {
+        let mail = document.getElementById('mail').value;
+        let password = document.getElementById('pwd').value;
+
+        if (mail.length > 0 && password.length > 0) {
+            $.ajax({
+                url: "http://localhost:8080/authorization",
+                type: "POST",
+                data: {mail: mail, password: password},
+                dataType: "json",
+                success: function (result) {
+                    if (result['accesses'] === 'user')
+                        window.location.href = result['Url']
+                    else if (result['accesses'] === 'admin')
+                        window.location.href = result['Url']
+                    else
+                        console.log("y tebya error")
+                    return false
+                },
+                error: function (jqXHR, exception) {console.log(jqXHR, exception)}
+            })
+        }
+    })
+</script>
+</body>
+</html>

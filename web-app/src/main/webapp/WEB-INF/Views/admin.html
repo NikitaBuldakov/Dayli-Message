@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Панель Админа</title>
+    <link rel="stylesheet" type="text/css" href="C:/Users/Developer/IdeaProjects/web-app/src/main/resources/mysite.css">
+</head>
+<body bgcolor=#808080>
+<div class="form_auth_block"  >
+    <div class="form_auth_block_content">
+        <p class="form_auth_block_head_text" >Создание сообщения дня</p>
+        <input id="message" type="text" name="message" placeholder="Введите ваше сообщение дня" required >
+        <label>Выберете из существующих</label>
+        <div id="List">
+
+        </div>
+        <label>Выбрать дату</label>
+        <input type="date" id="calendar">
+        <button class="form_auth_button" type="submit" name="form_auth_submit" id="send">Выбрать</button>
+    </div>
+
+        <button  class="h_ref_button_u" onclick="redirectU()" />Сообщение дня
+        <button  class="h_ref_button_e" onclick="redirectA()"/>Выход
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+
+
+    let a = ''
+    $.ajax({
+        url: "http://localhost:8080/adminPanel",
+        type: "GET",
+        success: function (result) {
+            result = JSON.parse(result)
+            for(let i = 0; i< result['all'].length;i++){
+                $("#List").append('<p id="p' + result['all'][i]['id'] + '"><input name="List"  type="radio" id="' + result['all'][i]['id'] + '" >' + result['all'][i]['message'] +'<br>' + '<br>' + "Количество выводов на сервере: " + result['all'][i]['count'] + '</p>')
+            }
+            return false
+        },
+        error: function (jqXHR, exception) {console.log(jqXHR, exception)}
+    })
+    $(document).on("click", ".form_auth_button", function() {
+        let id = $('input[name="List"]:checked').attr('id')
+        let message = ''
+        if(id){ message = document.getElementById('p' + id).innerText}
+        let mail = document.getElementById('message').value
+        let date = document.getElementById('calendar').value
+        console.log(date, mail, message)
+
+        if (message.length!==0&&mail.length===0) {
+            $.ajax({
+                url: "http://localhost:8080/adminPane",
+                type: "POST",
+                data: {message: message, Date: date},
+                dataType: "text",
+                success: function (result) {
+                    console.log(result['accesses'])
+
+                    result = JSON.parse(result)
+
+                    if (result['accesses'] === 'user')
+                        window.location.href = result['Url']
+                    else if (result['accesses'] === 'admin')
+                        window.location.href = result['Url']
+                    else
+                        console.log("y tebya error")
+                    return false
+                },
+                error: function (jqXHR, exception) {console.log(jqXHR, exception)}
+            })
+        }else {
+            $.ajax({
+                url: "http://localhost:8080/adminPane",
+                type: "POST",
+                data: {message: mail, Date: date},
+                dataType: "text",
+                success: function (result) {
+                    result = JSON.parse(result)
+                    if (result['accesses'] === 'user')
+                        window.location.href = result['Url']
+                    else if (result['accesses'] === 'admin')
+                        window.location.href = result['Url']
+                    else
+                        console.log("y tebya error")
+                    return false
+                },
+                error: function (jqXHR, exception) {console.log(jqXHR, exception)}
+            })
+        }
+
+
+    })
+    function redirectU() {
+        let Uri = "user.html"
+        window.location=Uri;
+    }
+    function redirectA() {
+        let Uri = "Auth.html"
+        window.location=Uri;
+    }
+</script>
+</body>
+</html>

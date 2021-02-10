@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Сообщение дня</title>
+    <link rel="stylesheet" type="text/css" href="C:/Users/Developer/IdeaProjects/web-app/src/main/resources/mysite.css">
+</head>
+<body bgcolor=#808080>
+<div class="form_auth_block" >
+    <button class="LeftArrow" type="submit"><-</button>
+    <button class="RightArrow" type="submit">-></button>
+    <div class="form_auth_block_content">
+        <p class="form_auth_block_head_text"></p>
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    let messages = ''
+    let activeMessage = 0
+
+    $.ajax({
+        url: "http://localhost:8080/dailyMassage",
+        type: "GET",
+        success: function (result) {
+            messages = JSON.parse(result)
+            activeMessage = messages.all.length-1
+            $(".form_auth_block_head_text").append('<div>' + messages['all'][activeMessage]['massage'] + '</div>')
+            if(messages.all.length>1) document.getElementsByClassName('LeftArrow')[0].style.opacity=1
+            return false
+        },
+        error: function (jqXHR, exception) {console.log(jqXHR, exception)}
+    })
+    $(document).on("click", ".LeftArrow", function() {
+        if(activeMessage-1 >= 0){
+            activeMessage-= 1;
+            $(".form_auth_block_head_text").children().remove()
+            $(".form_auth_block_head_text").append('<div>' + messages['all'][activeMessage]['massage'] + '</div>')
+            document.getElementsByClassName('RightArrow')[0].style.opacity=1
+            if (activeMessage===0){
+                document.getElementsByClassName('LeftArrow')[0].style.opacity=0
+            }
+        }
+    })
+    $(document).on("click", ".RightArrow", function() {
+        if(activeMessage+1 < messages.all.length){
+            activeMessage+= 1;
+            $(".form_auth_block_head_text").children().remove()
+            $(".form_auth_block_head_text").append('<div>' + messages['all'][activeMessage]['massage'] + '</div>')
+            document.getElementsByClassName('LeftArrow')[0].style.opacity=1
+            if (activeMessage===messages.all.length-1){
+                document.getElementsByClassName('RightArrow')[0].style.opacity=0
+            }
+        }
+    })
+</script>
+</body>
+</html>
