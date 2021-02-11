@@ -44,7 +44,7 @@ public class AdminPanel {
     }
 
     @CrossOrigin
-    @PostMapping("/adminPane")
+    @PostMapping("/adminPanel")
     public String choiceMessage(@RequestParam("Date") Date date, @RequestParam("message") String message) {
         long time = System.currentTimeMillis();
         time += 86400000;
