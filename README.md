@@ -9,11 +9,11 @@ To run this app you will need:
 Required changes in the code: 
 file "ConfigurationProcess.pdf" is attached to the master.
 
-/--------------------------------------------------------/
+
 TO RUN THE APP:
 - Run the server after configuration process;
 - Go to domain name (temporary) - https://localhost:8080;
-/--------------------------------------------------------/
+
 
 Project structure:
 DB consists of 4 tables:
